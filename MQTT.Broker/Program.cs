@@ -1,4 +1,4 @@
 ﻿using MQTT.Broker;
 
 BrokerService brokerService=new BrokerService();
-brokerService.Start();
+await brokerService.Start();

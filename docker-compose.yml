@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  mqtt.broker:
+    image: ${DOCKER_REGISTRY-}mqttbroker
+    build:
+      context: .
+      dockerfile: MQTT.Broker/Dockerfile
+
+  mqtt.publisher:
+    image: ${DOCKER_REGISTRY-}mqttpublisher
+    build:
+      context: .
+      dockerfile: MQTT.Publisher/Dockerfile
+

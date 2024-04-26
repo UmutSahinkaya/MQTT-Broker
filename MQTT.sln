@@ -5,6 +5,10 @@ VisualStudioVersion = 17.10.34607.79
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MQTT.Broker", "MQTT.Broker\MQTT.Broker.csproj", "{F4912FB2-2C79-482A-80B9-B523137AC7AA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MQTT.Publisher", "MQTT.Publisher\MQTT.Publisher.csproj", "{676870F1-344A-4B11-857C-EBBAF386B0D7}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{F5DD9361-5441-4C4F-A5D2-97AD4EA9F034}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{F4912FB2-2C79-482A-80B9-B523137AC7AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4912FB2-2C79-482A-80B9-B523137AC7AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4912FB2-2C79-482A-80B9-B523137AC7AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{676870F1-344A-4B11-857C-EBBAF386B0D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{676870F1-344A-4B11-857C-EBBAF386B0D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{676870F1-344A-4B11-857C-EBBAF386B0D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{676870F1-344A-4B11-857C-EBBAF386B0D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5DD9361-5441-4C4F-A5D2-97AD4EA9F034}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5DD9361-5441-4C4F-A5D2-97AD4EA9F034}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5DD9361-5441-4C4F-A5D2-97AD4EA9F034}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5DD9361-5441-4C4F-A5D2-97AD4EA9F034}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

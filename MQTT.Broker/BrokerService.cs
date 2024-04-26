@@ -1,11 +1,12 @@
-﻿using MQTT.Broker.Models;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
+using MQTT.Broker.Models;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Protocol;
 using MQTTnet.Server;
 using Newtonsoft.Json;
 using System.Text;
-using System.Text.Json.Serialization;
 
 namespace MQTT.Broker;
 
@@ -57,24 +58,31 @@ public class BrokerService
         
     }
     
-    public void Start()
+    public async Task Start()
     {
         _mqttServer= new MqttFactory().CreateMqttServer();
-        _mqttServer.StartAsync(_mqttServerOptionsBuilder.Build());
+        await _mqttServer.StartAsync(_mqttServerOptionsBuilder.Build());
         _mqttServer.UseApplicationMessageReceivedHandler(async e =>
         {
             try
             {
                 string topic = e.ApplicationMessage.Topic;
                 var payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
-                var data = JsonConvert.DeserializeObject<Datas>(payload);
+                // MongoDb ye bağlan
+                var client = new MongoClient("mongodb://localhost:27017");
+                var database = client.GetDatabase("MyDatabase");
+                var collection = database.GetCollection<BsonDocument>("MessageCollection");
+
                 switch (topic)
                 {
                     case "test/topic":
-                        Console.WriteLine($"Name:{data.Name} \n Surname:{data.Surname} \n Birthday:{data.BirthDay}");
+                        var document = new BsonDocument
+                        {
+                            {"Message",payload}
+                        };
+                        await collection.InsertOneAsync(document);
                         break;
                     case "test/receive":
-                        Console.WriteLine($"Name:{data.Name} \n Surname:{data.Surname} \n Birthday:{data.BirthDay}");
                         break;
                     default: Console.WriteLine("Böyle bir Topic YOOK."); break;
                 }
