@@ -66,10 +66,6 @@ public class Publisher
                 .WithPayload("Message:"+$"{data.Message}").Build();
                 await _client.PublishAsync(mqttmessage);
                 //await Task.Delay(TimeSpan.FromSeconds(10));
-                
-                
-            
-            
         });
     }
 
