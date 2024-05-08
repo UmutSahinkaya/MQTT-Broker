@@ -19,7 +19,7 @@ public class Publisher
         //configure options
         _options = new MqttClientOptionsBuilder()
             .WithClientId("Example1234") // bağlanan IoT'nin benzersiz numarası.
-            .WithTcpServer("localhost", 1884) // bağlanacağı port ve ip adresi (sunucucu yada bilgisayar) biz local çalıştığımız için bu şekilde local ip girdik
+            .WithTcpServer("127.0.0.1", 1884) // bağlanacağı port ve ip adresi (sunucucu yada bilgisayar) biz local çalıştığımız için bu şekilde local ip girdik
             .WithCredentials("MyBroker", "MyPassword")
             .WithCleanSession()
             .Build();
