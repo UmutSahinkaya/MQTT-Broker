@@ -1,15 +1,31 @@
-version: '3.4'
-
 services:
-  mqtt.broker:
-    image: ${DOCKER_REGISTRY-}mqttbroker
+  mqtt.broker1:
+    image: ${DOCKER_REGISTRY-}mqttbroker1
     build:
       context: .
       dockerfile: MQTT.Broker/Dockerfile
+    ports:
+      - "1883:1883"
+    networks:
+      - mqtt_network 
+
+  mqtt.broker2:
+    image: ${DOCKER_REGISTRY-}mqttbroker2
+    build:
+      context: .
+      dockerfile: MQTT.Broker/Dockerfile
+    ports:
+      - "1884:1883"
+    networks:
+      - mqtt_network 
 
   mqtt.publisher:
     image: ${DOCKER_REGISTRY-}mqttpublisher
     build:
       context: .
       dockerfile: MQTT.Publisher/Dockerfile
+    networks:
+      - mqtt_network 
 
+networks:
+  mqtt_network:

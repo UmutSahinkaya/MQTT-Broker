@@ -43,7 +43,7 @@ public class BrokerService
             })
             .WithConnectionBacklog(1000)
             .WithDefaultEndpointBoundIPAddress(System.Net.IPAddress.Parse("127.0.0.1"))
-            .WithDefaultEndpointPort(1884)
+            .WithDefaultEndpointPort(1883)
             .WithSubscriptionInterceptor(context =>
             {
                 if (context.TopicFilter.Topic.StartsWith("test/topic") || context.TopicFilter.Topic.StartsWith("test/receive"))
