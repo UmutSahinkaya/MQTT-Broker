@@ -1,4 +1,6 @@
 ﻿using MQTT.Publisher;
 
-Publisher publisher = new Publisher();
-publisher.YayinYapmayaBasla();
+var publisher = new Publisher();
+
+// Yayın yapmaya başla
+await publisher.YayinYapmayaBasla();
