@@ -34,7 +34,7 @@ namespace MQTT.Subscriber
 
                 // Shared Subscription ile abone olma
                 await mqttClient.SubscribeAsync(new MqttTopicFilterBuilder()
-                    .WithTopic("$share/group1/topic/test") // Topic adı
+                    .WithTopic(@"$share/group1/topic/test") // Topic adı
                     .Build());
 
                 Console.WriteLine("Subscribed to $share/group1/topic/test with shared subscription.");
@@ -56,36 +56,14 @@ namespace MQTT.Subscriber
                     string topic = e.ApplicationMessage.Topic;
                     string payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
 
-                    switch (topic)
-                    {
-                        case "$share/group1/topic/test":
-                            var document = new BsonDocument
+                    if(topic== @"$share/group1/topic/test") { 
+                        var document = new BsonDocument
                             {
                                 { "Message", payload }
                             };
-                            await collection.InsertOneAsync(document);
-                            Console.WriteLine("topic/test topic'ine ait veri MongoDB'ye kaydedildi.");
-                            break;
-                        case "/topic/test":
-                             document = new BsonDocument
-                            {
-                                { "Message", payload }
-                            };
-                            await collection.InsertOneAsync(document);
-                            Console.WriteLine("topic/test topic'ine ait veri MongoDB'ye kaydedildi.");
-                            break;
-                        case "topic/test":
-                             document = new BsonDocument
-                            {
-                                { "Message", payload }
-                            };
-                            await collection.InsertOneAsync(document);
-                            Console.WriteLine("topic/test topic'ine ait veri MongoDB'ye kaydedildi.");
-                            break;
-                        default:
-                            Console.WriteLine("Böyle bir Topic YOK.");
-                            break;
-                    }
+                        await collection.InsertOneAsync(document);
+                        Console.WriteLine("$share/group1/topic/test topic'ine ait veri MongoDB'ye kaydedildi.");
+                    }        
                 }
                 catch (Exception ex)
                 {

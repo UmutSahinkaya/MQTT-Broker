@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Data;
 using MQTTnet;
@@ -14,7 +15,7 @@ namespace MQTT.Publisher
             var factory = new MqttFactory();
             var mqttClient = factory.CreateMqttClient();
             var data = LongReadOut.Message;
-            const int sayac = 10000;
+            const int deviceCount = 10000; // 10 bin cihaz simule edilecek
 
             var options = new MqttClientOptionsBuilder()
                 .WithClientId("PublisherClient")
@@ -22,29 +23,34 @@ namespace MQTT.Publisher
                 .WithProtocolVersion(MQTTnet.Formatter.MqttProtocolVersion.V500)
                 .Build();
 
+            // 2 saniye gecikme ekleyin
             await Task.Delay(2000);
+
             mqttClient.UseConnectedHandler(async e =>
             {
                 Console.WriteLine("Publisher connected successfully.");
 
-                for (int index = 0; index < sayac; index++)
+                for (int index = 0; index < deviceCount; index++)
                 {
                     var message = new MqttApplicationMessageBuilder()
-                         .WithTopic("topic/test") // Topic adı
-                         .WithPayload($"{data} - {index + 1}")
-                         .WithAtLeastOnceQoS()
-                         .WithRetainFlag(false)
-                         .Build();
+                        .WithTopic("$share/group1/topic/test")
+                        .WithPayload($"{data} - {index + 1}")
+                        .WithExactlyOnceQoS()
+                        .WithRetainFlag(false)
+                        .Build();
+
                     try
                     {
-                        await mqttClient.PublishAsync(message, CancellationToken.None);
-                        Console.WriteLine($"Mesaj yayımlandı: {index + 1} kez");
+                        await mqttClient.PublishAsync(message);
+                        Console.WriteLine($"Mesaj yayımlandı: {index + 1}"); // Mesajın yayımlandığını göster
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine($"Mesaj yayınlama sırasında bir hata oluştu: {ex.Message}");
                     }
                 }
+
+                Console.WriteLine($"Tüm mesajlar yayımlandı: {deviceCount} cihazdan");
             });
 
             mqttClient.UseDisconnectedHandler(e =>
@@ -58,7 +64,7 @@ namespace MQTT.Publisher
 
             try
             {
-                await mqttClient.ConnectAsync(options, CancellationToken.None);
+                await mqttClient.ConnectAsync(options);
             }
             catch (Exception ex)
             {
