@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Data;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MQTTnet;
@@ -13,6 +14,7 @@ namespace MQTT.Subscriber2
         {
             var factory = new MqttFactory();
             var mqttClient = factory.CreateMqttClient();
+            string longTopic = Topic.topicLong;
 
             var options = new MqttClientOptionsBuilder()
                 .WithClientId("Subscriber2Client")
@@ -31,7 +33,7 @@ namespace MQTT.Subscriber2
 
                 // Shared Subscription ile abone olma
                 await mqttClient.SubscribeAsync(new MqttTopicFilterBuilder()
-                    .WithTopic("$share/group1/topic/test") // Topic adı
+                    .WithTopic($"/{longTopic}")
                     .WithExactlyOnceQoS()
                     .Build());
 
@@ -55,15 +57,15 @@ namespace MQTT.Subscriber2
                     string topic = e.ApplicationMessage.Topic;
                     string payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
 
-                    if (topic == "$share/group1/topic/test")
-                    {
+                    //if (topic == "$share/group1/topic/test")
+                    //{
                         var document = new BsonDocument
                         {
                             { "Message", payload }
                         };
                         await collection.InsertOneAsync(document);
                         Console.WriteLine(@"$share/group1/topic/test topic'ine ait veri MongoDB'ye kaydedildi.");
-                    }
+                    //}
                 }
                 catch (Exception ex)
                 {
@@ -88,9 +90,3 @@ namespace MQTT.Subscriber2
         }
     }
 }
-
-
-
-
-
-

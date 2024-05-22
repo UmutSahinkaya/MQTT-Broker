@@ -16,7 +16,7 @@ namespace MQTT.Publisher
             var mqttClient = factory.CreateMqttClient();
             var data = LongReadOut.Message;
             const int deviceCount = 10000; // 10 bin cihaz simule edilecek
-
+            string sharedTopic = Topic.topicSharedLong;
             var options = new MqttClientOptionsBuilder()
                 .WithClientId("PublisherClient")
                 .WithTcpServer("localhost", 1883) // MQTT broker adresi ve portu
@@ -33,7 +33,7 @@ namespace MQTT.Publisher
                 for (int index = 0; index < deviceCount; index++)
                 {
                     var message = new MqttApplicationMessageBuilder()
-                        .WithTopic("$share/group1/topic/test")
+                        .WithTopic(sharedTopic)
                         .WithPayload($"{data} - {index + 1}")
                         .WithExactlyOnceQoS()
                         .WithRetainFlag(false)
