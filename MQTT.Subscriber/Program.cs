@@ -2,13 +2,11 @@
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using MongoDB.Bson;
-using MongoDB.Driver;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Client.Options;
 
-namespace MQTT.Subscriber
+namespace MqttSubscriber
 {
     class Program
     {
@@ -23,63 +21,30 @@ namespace MQTT.Subscriber
                 .WithProtocolVersion(MQTTnet.Formatter.MqttProtocolVersion.V500)
                 .Build();
 
-            // MongoDB'ye bağlan
-            var client = new MongoClient("mongodb://localhost:27017");
-            var database = client.GetDatabase("MyDatabase");
-            var collection = database.GetCollection<BsonDocument>("LongReadCollection");
-
             mqttClient.UseConnectedHandler(async e =>
             {
                 Console.WriteLine("Subscriber connected successfully.");
 
                 // Shared Subscription ile abone olma
                 await mqttClient.SubscribeAsync(new MqttTopicFilterBuilder()
-                    .WithTopic(@"$share/group1/topic/test") // Topic adı
+                    .WithTopic("$share/group1/shared/topic")
                     .Build());
 
-                Console.WriteLine("Subscribed to $share/group1/topic/test with shared subscription.");
+                Console.WriteLine("Subscribed to $share/group1/shared/topic with shared subscription.");
             });
 
             mqttClient.UseDisconnectedHandler(e =>
             {
                 Console.WriteLine("Subscriber disconnected.");
-                if (e.Exception != null)
-                {
-                    Console.WriteLine($"Bağlantı kesilme nedeni: {e.Exception.Message}");
-                }
             });
 
-            mqttClient.UseApplicationMessageReceivedHandler(async e =>
+            mqttClient.UseApplicationMessageReceivedHandler(e =>
             {
-                try
-                {
-                    string topic = e.ApplicationMessage.Topic;
-                    string payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
-
-                    if(topic== @"$share/group1/topic/test") { 
-                        var document = new BsonDocument
-                            {
-                                { "Message", payload }
-                            };
-                        await collection.InsertOneAsync(document);
-                        Console.WriteLine("$share/group1/topic/test topic'ine ait veri MongoDB'ye kaydedildi.");
-                    }        
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Bir hata ile karşılaşıldı: {ex.Message}");
-                }
+                var message = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
+                Console.WriteLine($"Received message: {message} from topic: {e.ApplicationMessage.Topic}");
             });
 
-            try
-            {
-                await mqttClient.ConnectAsync(options, CancellationToken.None);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Bağlantı sırasında bir hata oluştu: {ex.Message}");
-                return;
-            }
+            await mqttClient.ConnectAsync(options, CancellationToken.None);
 
             Console.WriteLine("Press any key to exit.");
             Console.ReadLine();

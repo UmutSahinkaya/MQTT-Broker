@@ -3,17 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.34607.79
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MQTT.Broker", "MQTT.Broker\MQTT.Broker.csproj", "{F4912FB2-2C79-482A-80B9-B523137AC7AA}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MQTT.Publisher", "MQTT.Publisher\MQTT.Publisher.csproj", "{676870F1-344A-4B11-857C-EBBAF386B0D7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "..\Data\Data.csproj", "{0B922AFB-03CB-4DFF-B544-0FF38979A28B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MQTT.Subscriber", "MQTT.Subscriber\MQTT.Subscriber.csproj", "{D35AC580-D0D6-40D2-AF49-AADA1C386DEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MQTT.Subscriber2", "..\MQTT.Subscriber2\MQTT.Subscriber2.csproj", "{562D07EC-E8B1-4EFB-9343-F0028B1C921F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MQTT.Subscriber2", "MQTT.Subscriber2\MQTT.Subscriber2.csproj", "{48B4EB54-1336-406E-8BC3-958E414C68A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MQTT.Subscriber3", "..\MQTT.Subscriber3\MQTT.Subscriber3.csproj", "{C1265BA1-2097-49C2-87AE-04FD00794E95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MQTT.Subscriber3", "MQTT.Subscriber3\MQTT.Subscriber3.csproj", "{35CF34E0-A192-45E5-B662-277EFB24DE8D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,30 +17,22 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F4912FB2-2C79-482A-80B9-B523137AC7AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F4912FB2-2C79-482A-80B9-B523137AC7AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F4912FB2-2C79-482A-80B9-B523137AC7AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F4912FB2-2C79-482A-80B9-B523137AC7AA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{676870F1-344A-4B11-857C-EBBAF386B0D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{676870F1-344A-4B11-857C-EBBAF386B0D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{676870F1-344A-4B11-857C-EBBAF386B0D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{676870F1-344A-4B11-857C-EBBAF386B0D7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0B922AFB-03CB-4DFF-B544-0FF38979A28B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0B922AFB-03CB-4DFF-B544-0FF38979A28B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0B922AFB-03CB-4DFF-B544-0FF38979A28B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0B922AFB-03CB-4DFF-B544-0FF38979A28B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D35AC580-D0D6-40D2-AF49-AADA1C386DEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D35AC580-D0D6-40D2-AF49-AADA1C386DEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D35AC580-D0D6-40D2-AF49-AADA1C386DEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D35AC580-D0D6-40D2-AF49-AADA1C386DEE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{562D07EC-E8B1-4EFB-9343-F0028B1C921F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{562D07EC-E8B1-4EFB-9343-F0028B1C921F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{562D07EC-E8B1-4EFB-9343-F0028B1C921F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{562D07EC-E8B1-4EFB-9343-F0028B1C921F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C1265BA1-2097-49C2-87AE-04FD00794E95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C1265BA1-2097-49C2-87AE-04FD00794E95}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C1265BA1-2097-49C2-87AE-04FD00794E95}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C1265BA1-2097-49C2-87AE-04FD00794E95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48B4EB54-1336-406E-8BC3-958E414C68A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48B4EB54-1336-406E-8BC3-958E414C68A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48B4EB54-1336-406E-8BC3-958E414C68A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48B4EB54-1336-406E-8BC3-958E414C68A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35CF34E0-A192-45E5-B662-277EFB24DE8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35CF34E0-A192-45E5-B662-277EFB24DE8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35CF34E0-A192-45E5-B662-277EFB24DE8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35CF34E0-A192-45E5-B662-277EFB24DE8D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
