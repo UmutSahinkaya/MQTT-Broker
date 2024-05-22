@@ -8,10 +8,10 @@ namespace Data
 {
     public static class Topic
     {
-        public static string topicSharedLong = "$share/groupA/long";
-        public static string topicSharedShort = "$share/groupA/short";
+        public const string topicSharedLong = "$share/groupA/long/test";
+        public const string topicSharedShort = "$share/groupA/short/test";
 
-        public static string topicShort = "short/test";
-        public static string topicLong = "long/test";
+        public const string topicShort = "short/test";
+        public const string topicLong = "long/test";
     }
 }
