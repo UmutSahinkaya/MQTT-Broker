@@ -8,7 +8,7 @@ namespace Data
 {
     public static class Topic
     {
-        public const string topicSharedLong = "$share/groupA/long/test";
+        public const string topicSharedLong = "$SharedSubscription/subname//long/";
         public const string topicSharedShort = "$share/groupA/short/test";
 
         public const string topicShort = "short/test";
