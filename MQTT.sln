@@ -3,11 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.34607.79
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MQTT.Broker", "MQTT.Broker\MQTT.Broker.csproj", "{F4912FB2-2C79-482A-80B9-B523137AC7AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MQTT.Publisher", "MQTT.Publisher\MQTT.Publisher.csproj", "{676870F1-344A-4B11-857C-EBBAF386B0D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MQTT.Publisher", "MQTT.Publisher\MQTT.Publisher.csproj", "{676870F1-344A-4B11-857C-EBBAF386B0D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MQTT.Subscriber", "MQTT.Subscriber\MQTT.Subscriber.csproj", "{D35AC580-D0D6-40D2-AF49-AADA1C386DEE}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{F5DD9361-5441-4C4F-A5D2-97AD4EA9F034}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MQTT.Subscriber2", "MQTT.Subscriber2\MQTT.Subscriber2.csproj", "{48B4EB54-1336-406E-8BC3-958E414C68A6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MQTT.Subscriber3", "MQTT.Subscriber3\MQTT.Subscriber3.csproj", "{35CF34E0-A192-45E5-B662-277EFB24DE8D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{BAF3F7E4-DF9D-4F1A-AD95-024CF39CAA8A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,18 +19,26 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F4912FB2-2C79-482A-80B9-B523137AC7AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F4912FB2-2C79-482A-80B9-B523137AC7AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F4912FB2-2C79-482A-80B9-B523137AC7AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F4912FB2-2C79-482A-80B9-B523137AC7AA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{676870F1-344A-4B11-857C-EBBAF386B0D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{676870F1-344A-4B11-857C-EBBAF386B0D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{676870F1-344A-4B11-857C-EBBAF386B0D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{676870F1-344A-4B11-857C-EBBAF386B0D7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F5DD9361-5441-4C4F-A5D2-97AD4EA9F034}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F5DD9361-5441-4C4F-A5D2-97AD4EA9F034}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F5DD9361-5441-4C4F-A5D2-97AD4EA9F034}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F5DD9361-5441-4C4F-A5D2-97AD4EA9F034}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D35AC580-D0D6-40D2-AF49-AADA1C386DEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D35AC580-D0D6-40D2-AF49-AADA1C386DEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D35AC580-D0D6-40D2-AF49-AADA1C386DEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D35AC580-D0D6-40D2-AF49-AADA1C386DEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48B4EB54-1336-406E-8BC3-958E414C68A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48B4EB54-1336-406E-8BC3-958E414C68A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48B4EB54-1336-406E-8BC3-958E414C68A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48B4EB54-1336-406E-8BC3-958E414C68A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35CF34E0-A192-45E5-B662-277EFB24DE8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35CF34E0-A192-45E5-B662-277EFB24DE8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35CF34E0-A192-45E5-B662-277EFB24DE8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35CF34E0-A192-45E5-B662-277EFB24DE8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAF3F7E4-DF9D-4F1A-AD95-024CF39CAA8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAF3F7E4-DF9D-4F1A-AD95-024CF39CAA8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAF3F7E4-DF9D-4F1A-AD95-024CF39CAA8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAF3F7E4-DF9D-4F1A-AD95-024CF39CAA8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
