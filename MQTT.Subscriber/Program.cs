@@ -14,8 +14,6 @@ namespace MQTT.Subscriber
         {
             var factory = new MqttFactory();
             var mqttClient = factory.CreateMqttClient();
-            string longTopic = Topic.topicLong; 
-            string shortTopic = Topic.topicShort;
             string topicSharedLong = Topic.topicSharedLong;
 
 
@@ -38,10 +36,10 @@ namespace MQTT.Subscriber
                 // Shared Subscription ile abone olma
                 await mqttClient.SubscribeAsync(new MqttTopicFilterBuilder()
                     .WithTopic(topicSharedLong)
-                    .WithExactlyOnceQoS()
+                    .WithAtLeastOnceQoS()
                     .Build());
 
-                Console.WriteLine("Subscribed to $share/group1/topic/test with shared subscription.");
+                Console.WriteLine($"Subscribed to {topicSharedLong} with shared subscription.");
             });
 
             mqttClient.UseDisconnectedHandler(e =>
@@ -63,17 +61,7 @@ namespace MQTT.Subscriber
                             {
                                 { "Message", payload }
                             };
-                    if (topic == longTopic)
-                    {
-                        await collection.InsertOneAsync(document);
-                        Console.WriteLine($"{longTopic} topic'ine ait veri MongoDB'ye kaydedildi.");
-                    }
-                    else if (topic == shortTopic)
-                    {
-                        await collection.InsertOneAsync(document);
-                        Console.WriteLine($"{shortTopic} topic'ine ait veri MongoDB'ye kaydedildi.");
-                    }
-                    else if (topic == topicSharedLong)
+                    if (topic == topicSharedLong)
                     {
                         await collection.InsertOneAsync(document);
                         Console.WriteLine($"{topicSharedLong} topic'ine ait veri MongoDB'ye kaydedildi.");

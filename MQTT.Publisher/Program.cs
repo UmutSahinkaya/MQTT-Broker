@@ -16,7 +16,7 @@ namespace MQTT.Publisher
             var mqttClient = factory.CreateMqttClient();
             var data = LongReadOut.Message;
             const int deviceCount = 100; 
-            string sharedTopic = Topic.topicSharedLong;
+            string topicSharedLong = Topic.topicSharedLong;
             var options = new MqttClientOptionsBuilder()
                 .WithClientId("PublisherClient")
                 .WithTcpServer("localhost", 1883)
@@ -33,7 +33,7 @@ namespace MQTT.Publisher
                 for (int index = 0; index < deviceCount; index++)
                 {
                     var message = new MqttApplicationMessageBuilder()
-                        .WithTopic(sharedTopic)
+                        .WithTopic(topicSharedLong)
                         .WithPayload($"{data} - {index + 1}")
                         .WithExactlyOnceQoS()
                         .Build();
