@@ -12,17 +12,18 @@ namespace MQTT.Subscriber3
     {
         static async Task Main(string[] args)
         {
-            var factory = new MqttFactory();
-            var mqttClient = factory.CreateMqttClient();
-            string topicSharedLong = Topic.topicSharedLong;
-
-
-
             var options = new MqttClientOptionsBuilder()
                 .WithClientId("Subscriber3Client")
-                .WithTcpServer("localhost", 1883) // MQTT broker adresi ve portu
+                .WithTcpServer("localhost", 1883)
                 .WithProtocolVersion(MQTTnet.Formatter.MqttProtocolVersion.V500)
+                .WithCredentials("test", "test")
+                .WithCleanSession()
                 .Build();
+
+            var factory = new MqttFactory();
+            var mqttClient = factory.CreateMqttClient();
+            string topicSharedLong = Topic.topicLong;
+
 
             // MongoDB'ye bağlan
             var client = new MongoClient("mongodb://localhost:27017");
@@ -31,23 +32,31 @@ namespace MQTT.Subscriber3
 
             mqttClient.UseConnectedHandler(async e =>
             {
-                Console.WriteLine("Subscriber connected successfully.");
+                Console.WriteLine("Subscriber3 connected successfully.");
 
                 // Shared Subscription ile abone olma
                 await mqttClient.SubscribeAsync(new MqttTopicFilterBuilder()
                     .WithTopic(topicSharedLong)
-                    .WithAtLeastOnceQoS()
+                    .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
                     .Build());
 
                 Console.WriteLine($"Subscribed to {topicSharedLong} with shared subscription.");
             });
 
-            mqttClient.UseDisconnectedHandler(e =>
+            mqttClient.UseDisconnectedHandler(async e =>
             {
                 Console.WriteLine("Subscriber 3 disconnected.");
                 if (e.Exception != null)
                 {
                     Console.WriteLine($"Bağlantı kesilme nedeni: {e.Exception.Message}");
+                }
+                try
+                {
+                    await mqttClient.ConnectAsync(options, CancellationToken.None); // Yeniden bağlanmayı dene
+                }
+                catch
+                {
+                    Console.WriteLine("### RECONNECTING FAILED ###");
                 }
             });
 

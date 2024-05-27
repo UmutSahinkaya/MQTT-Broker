@@ -12,17 +12,19 @@ namespace MQTT.Subscriber
     {
         static async Task Main(string[] args)
         {
-            var factory = new MqttFactory();
-            var mqttClient = factory.CreateMqttClient();
-            string topicSharedLong = Topic.topicSharedLong;
-
-
-
             var options = new MqttClientOptionsBuilder()
                 .WithClientId("SubscriberClient")
-                .WithTcpServer("localhost", 1883) // MQTT broker adresi ve portu
+                .WithTcpServer("localhost", 1883)
                 .WithProtocolVersion(MQTTnet.Formatter.MqttProtocolVersion.V500)
+                .WithCredentials("test", "test")
+                .WithCleanSession()
                 .Build();
+
+            var factory = new MqttFactory();
+            var mqttClient = factory.CreateMqttClient();
+            string topicSharedLong = Topic.topicLong;
+
+
 
             // MongoDB'ye bağlan
             var client = new MongoClient("mongodb://localhost:27017");
@@ -31,25 +33,28 @@ namespace MQTT.Subscriber
 
             mqttClient.UseConnectedHandler(async e =>
             {
-                Console.WriteLine("Subscriber connected successfully.");
+                Console.WriteLine("Subscriber1 connected successfully.");
 
                 // Shared Subscription ile abone olma
                 await mqttClient.SubscribeAsync(new MqttTopicFilterBuilder()
                     .WithTopic(topicSharedLong)
-                    .WithAtLeastOnceQoS()
+                    .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtMostOnce)
                     .Build());
 
                 Console.WriteLine($"Subscribed to {topicSharedLong} with shared subscription.");
             });
 
-            mqttClient.UseDisconnectedHandler(e =>
+            mqttClient.UseDisconnectedHandler(async e =>
             {
                 Console.WriteLine("Subscriber disconnected.");
                 if (e.Exception != null)
                 {
                     Console.WriteLine($"Bağlantı kesilme nedeni: {e.Exception.Message}");
                 }
+                await Task.Delay(TimeSpan.FromSeconds(5)); // Bekleyin ve yeniden bağlanmayı deneyin
+                await mqttClient.ConnectAsync(options, CancellationToken.None);
             });
+
 
             mqttClient.UseApplicationMessageReceivedHandler(async e =>
             {
@@ -58,12 +63,16 @@ namespace MQTT.Subscriber
                     string topic = e.ApplicationMessage.Topic;
                     string payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
                     var document = new BsonDocument
-                            {
-                                { "Message", payload }
-                            };
+                                    {
+                                       { "Message", payload },
+                                       { "topic", topic },
+                                       { "Timestamp", DateTime.UtcNow }
+                                    };
                     if (topic == topicSharedLong)
                     {
-                        await collection.InsertOneAsync(document);
+                        // Tek tek yazmak yerine toplu yazma işlemi kullanabilirsiniz
+                        var documents = new List<BsonDocument> { document };
+                        await collection.InsertManyAsync(documents);
                         Console.WriteLine($"{topicSharedLong} topic'ine ait veri MongoDB'ye kaydedildi.");
                     }
                 }
@@ -72,6 +81,7 @@ namespace MQTT.Subscriber
                     Console.WriteLine($"Bir hata ile karşılaşıldı: {ex.Message}");
                 }
             });
+
 
             try
             {
