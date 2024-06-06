@@ -11,7 +11,10 @@ namespace Data
         public const string topicSharedLong = "$share/group1/long";
         public const string topicSharedShort = "$share/groupA/short/test";
 
-        public const string topicShort = "short/test";
-        public const string topicLong = "long/test";
+        public const string topicShort = "short/topic";
+        public const string topicLong = "long/topic";
+
+        public const string topicLoadProfile = "loadProfile/topic";
+
     }
 }

@@ -5,6 +5,8 @@ using MQTTnet;
 using MQTTnet.Client;
 using Data;
 using MQTTnet.Client.Options;
+using MongoDB.Driver.Core.Connections;
+using RabbitMQ.Client;
 
 namespace MQTT.Subscriber
 {
@@ -16,20 +18,26 @@ namespace MQTT.Subscriber
                 .WithClientId("SubscriberClient")
                 .WithTcpServer("localhost", 1883)
                 .WithProtocolVersion(MQTTnet.Formatter.MqttProtocolVersion.V500)
-                .WithCredentials("test", "test")
-                .WithCleanSession()
                 .Build();
 
             var factory = new MqttFactory();
-            var mqttClient = factory.CreateMqttClient();
+            var mqttClient = factory.CreateMqttClient(); 
             string topicSharedLong = Topic.topicLong;
+            string topicLoadProfile = Topic.topicLoadProfile;
 
-
+            //Rabbit Mq ayarları
+            var rabbitmqFactory = new ConnectionFactory();
+            rabbitmqFactory.Uri = new Uri("amqps://idcmiqqv:ud3-AL5qsqzzNxSa5oaOT9LPFcZyo2NU@cow.rmq2.cloudamqp.com/idcmiqqv");
+            using var connection = rabbitmqFactory.CreateConnection();
+            var channel = connection.CreateModel();
+            channel.QueueDeclare("RawData-queue", true, false, false);
+            channel.QueueDeclare("LoadProfile-queue", true, false, false);
 
             // MongoDB'ye bağlan
             var client = new MongoClient("mongodb://localhost:27017");
             var database = client.GetDatabase("MyDatabase");
-            var collection = database.GetCollection<BsonDocument>("LongReadCollection");
+            var readoutCollection = database.GetCollection<BsonDocument>("ReadoutCollection");
+            var loadProfileCollection = database.GetCollection<BsonDocument>("LoadProfileCollection");
 
             mqttClient.UseConnectedHandler(async e =>
             {
@@ -38,10 +46,14 @@ namespace MQTT.Subscriber
                 // Shared Subscription ile abone olma
                 await mqttClient.SubscribeAsync(new MqttTopicFilterBuilder()
                     .WithTopic(topicSharedLong)
-                    .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtMostOnce)
+                    .WithAtLeastOnceQoS()
+                    .Build());
+                await mqttClient.SubscribeAsync(new MqttTopicFilterBuilder()
+                    .WithTopic(topicLoadProfile)
+                    .WithAtLeastOnceQoS()
                     .Build());
 
-                Console.WriteLine($"Subscribed to {topicSharedLong} with shared subscription.");
+                Console.WriteLine($"Subscribed to {topicSharedLong} and {topicLoadProfile}.");
             });
 
             mqttClient.UseDisconnectedHandler(async e =>
@@ -63,17 +75,23 @@ namespace MQTT.Subscriber
                     string topic = e.ApplicationMessage.Topic;
                     string payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
                     var document = new BsonDocument
-                                    {
-                                       { "Message", payload },
-                                       { "topic", topic },
-                                       { "Timestamp", DateTime.UtcNow }
-                                    };
+                            {
+                                { "Message", payload }
+                            };
                     if (topic == topicSharedLong)
                     {
-                        // Tek tek yazmak yerine toplu yazma işlemi kullanabilirsiniz
-                        var documents = new List<BsonDocument> { document };
-                        await collection.InsertManyAsync(documents);
-                        Console.WriteLine($"{topicSharedLong} topic'ine ait veri MongoDB'ye kaydedildi.");
+                        await readoutCollection.InsertOneAsync(document);
+                        string message = document["_id"].ToString();
+                        var messageBody = Encoding.UTF8.GetBytes(message);
+                        channel.BasicPublish(string.Empty, "Readout-queue", null, messageBody);
+                        Console.WriteLine($"{topicSharedLong} topic'ine ait veri MongoDB'ye kaydedildi.document_ıd : {document["_id"]}");
+                    }else if (topic == topicLoadProfile)
+                    {
+                        await loadProfileCollection.InsertOneAsync(document);
+                        string message = document["_id"].ToString();
+                        var messageBody = Encoding.UTF8.GetBytes(message);
+                        channel.BasicPublish(string.Empty, "LoadProfile-queue", null, messageBody);
+                        Console.WriteLine($"{topicLoadProfile} topic'ine ait veri MongoDB'ye kaydedildi.document_ıd : {document["_id"]}");
                     }
                 }
                 catch (Exception ex)

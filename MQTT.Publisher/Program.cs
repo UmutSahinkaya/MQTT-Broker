@@ -15,16 +15,16 @@ namespace MQTT.Publisher
         {
             var factory = new MqttFactory();
             var mqttClient = factory.CreateMqttClient();
-            //var data = LongReadOut.Message;
-            var data = "test";
-            const int deviceCount = 1000; 
+            var data = LongReadOut.LoadProfileMessage;
+            //var data = "test";
+            const int deviceCount = 1; 
             string topicSharedLong = Topic.topicLong;
+            string topicLoadProfile = Topic.topicLoadProfile;
+
             var options = new MqttClientOptionsBuilder()
                 .WithClientId("PublisherClient")
                 .WithTcpServer("localhost", 1883)
                 .WithProtocolVersion(MQTTnet.Formatter.MqttProtocolVersion.V500)
-                .WithCredentials("test", "test")
-                .WithCleanSession()
                 .Build();
 
             // 2 saniye gecikme ekleyin
@@ -40,11 +40,17 @@ namespace MQTT.Publisher
                         .WithTopic(topicSharedLong)
                         .WithPayload($"{data} - {index + 1}")
                         .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                        .Build(); 
+                    var loadProfileMessage = new MqttApplicationMessageBuilder()
+                        .WithTopic(topicLoadProfile)
+                        .WithPayload($"{data} - {index + 1}")
+                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
                         .Build();
 
                     try
                     {
-                        var result = await mqttClient.PublishAsync(message);
+                        var result = await mqttClient.PublishAsync(loadProfileMessage);
+                        Thread.Sleep(10);
                         if (result.ReasonCode == MqttClientPublishReasonCode.Success)
                         {
                             Console.WriteLine($"Mesaj başarıyla yayımlandı: {index + 1}");

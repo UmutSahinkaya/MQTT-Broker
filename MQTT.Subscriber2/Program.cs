@@ -16,13 +16,11 @@ namespace MQTT.Subscriber2
                 .WithClientId("Subscriber2Client")
                 .WithTcpServer("localhost", 1883)
                 .WithProtocolVersion(MQTTnet.Formatter.MqttProtocolVersion.V500)
-                .WithCredentials("test", "test")
-                .WithCleanSession()
                 .Build();
 
             var factory = new MqttFactory();
             var mqttClient = factory.CreateMqttClient();
-            string topicSharedLong = Topic.topicLong;
+            string topicSharedLong = Topic.topicSharedLong;
 
 
 
@@ -38,7 +36,7 @@ namespace MQTT.Subscriber2
                 // Shared Subscription ile abone olma
                 await mqttClient.SubscribeAsync(new MqttTopicFilterBuilder()
                     .WithTopic(topicSharedLong)
-                    .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                    .WithAtLeastOnceQoS()
                     .Build());
 
                 Console.WriteLine($"Subscribed to {topicSharedLong} with shared subscription.");
@@ -63,17 +61,13 @@ namespace MQTT.Subscriber2
                     string topic = e.ApplicationMessage.Topic;
                     string payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
                     var document = new BsonDocument
-                                    {
-                                       { "Message", payload },
-                                       { "topic", topic },
-                                       { "Timestamp", DateTime.UtcNow }
-                                    };
+                            {
+                                { "Message", payload }
+                            };
                     if (topic == topicSharedLong)
                     {
-                        // Tek tek yazmak yerine toplu yazma işlemi kullanabilirsiniz
-                        var documents = new List<BsonDocument> { document };
-                        await collection.InsertManyAsync(documents);
-                        Console.WriteLine($"{topicSharedLong} topic'ine ait veri MongoDB'ye kaydedildi.");
+                        await collection.InsertOneAsync(document);
+                        Console.WriteLine($"{topicSharedLong} topic'ine ait veri MongoDB'ye kaydedildi.document_ıd : {document["_id"]}");
                     }
                 }
                 catch (Exception ex)
