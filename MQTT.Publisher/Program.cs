@@ -15,11 +15,11 @@ namespace MQTT.Publisher
         {
             var factory = new MqttFactory();
             var mqttClient = factory.CreateMqttClient();
-            var data = LongReadOut.LoadProfileMessage;
-            //var data = "test";
-            const int deviceCount = 1; 
-            string topicSharedLong = Topic.topicLong;
-            string topicLoadProfile = Topic.topicLoadProfile;
+            //var data = LongReadOut.LoadProfileMessage2;
+            var data = "test";
+            const int deviceCount = 1000; 
+            string topicLong = Topic.topicLong;
+            //string topicLoadProfile = Topic.topicLoadProfile;
 
             var options = new MqttClientOptionsBuilder()
                 .WithClientId("PublisherClient")
@@ -37,19 +37,19 @@ namespace MQTT.Publisher
                 for (int index = 0; index < deviceCount; index++)
                 {
                     var message = new MqttApplicationMessageBuilder()
-                        .WithTopic(topicSharedLong)
+                        .WithTopic(topicLong)
                         .WithPayload($"{data} - {index + 1}")
                         .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
                         .Build(); 
-                    var loadProfileMessage = new MqttApplicationMessageBuilder()
-                        .WithTopic(topicLoadProfile)
-                        .WithPayload($"{data} - {index + 1}")
-                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                        .Build();
+                    //var loadProfileMessage = new MqttApplicationMessageBuilder()
+                    //    .WithTopic(topicLoadProfile)
+                    //    .WithPayload($"{data} - {index + 1}")
+                    //    .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                    //    .Build();
 
                     try
                     {
-                        var result = await mqttClient.PublishAsync(loadProfileMessage);
+                        var result = await mqttClient.PublishAsync(message);
                         Thread.Sleep(10);
                         if (result.ReasonCode == MqttClientPublishReasonCode.Success)
                         {

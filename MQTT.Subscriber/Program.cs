@@ -22,22 +22,22 @@ namespace MQTT.Subscriber
 
             var factory = new MqttFactory();
             var mqttClient = factory.CreateMqttClient(); 
-            string topicSharedLong = Topic.topicLong;
-            string topicLoadProfile = Topic.topicLoadProfile;
+            string topicSharedLong = Topic.topicSharedLong;
+            //string topicLoadProfile = Topic.topicLoadProfile;
 
             //Rabbit Mq ayarları
-            var rabbitmqFactory = new ConnectionFactory();
-            rabbitmqFactory.Uri = new Uri("amqps://idcmiqqv:ud3-AL5qsqzzNxSa5oaOT9LPFcZyo2NU@cow.rmq2.cloudamqp.com/idcmiqqv");
-            using var connection = rabbitmqFactory.CreateConnection();
-            var channel = connection.CreateModel();
-            channel.QueueDeclare("RawData-queue", true, false, false);
-            channel.QueueDeclare("LoadProfile-queue", true, false, false);
+            //var rabbitmqFactory = new ConnectionFactory();
+            //rabbitmqFactory.Uri = new Uri("amqps://idcmiqqv:ud3-AL5qsqzzNxSa5oaOT9LPFcZyo2NU@cow.rmq2.cloudamqp.com/idcmiqqv");
+            //using var connection = rabbitmqFactory.CreateConnection();
+            //var channel = connection.CreateModel();
+            //channel.QueueDeclare("RawData-queue", true, false, false);
+            //channel.QueueDeclare("LoadProfile-queue", true, false, false);
 
             // MongoDB'ye bağlan
-            var client = new MongoClient("mongodb://localhost:27017");
-            var database = client.GetDatabase("MyDatabase");
-            var readoutCollection = database.GetCollection<BsonDocument>("ReadoutCollection");
-            var loadProfileCollection = database.GetCollection<BsonDocument>("LoadProfileCollection");
+            //var client = new MongoClient("mongodb://localhost:27017");
+            //var database = client.GetDatabase("MyDatabase");
+            //var readoutCollection = database.GetCollection<BsonDocument>("ReadoutCollection");
+            //var loadProfileCollection = database.GetCollection<BsonDocument>("LoadProfileCollection");
 
             mqttClient.UseConnectedHandler(async e =>
             {
@@ -48,12 +48,12 @@ namespace MQTT.Subscriber
                     .WithTopic(topicSharedLong)
                     .WithAtLeastOnceQoS()
                     .Build());
-                await mqttClient.SubscribeAsync(new MqttTopicFilterBuilder()
-                    .WithTopic(topicLoadProfile)
-                    .WithAtLeastOnceQoS()
-                    .Build());
+                //await mqttClient.SubscribeAsync(new MqttTopicFilterBuilder()
+                //    .WithTopic(topicLoadProfile)
+                //    .WithAtLeastOnceQoS()
+                //    .Build());
 
-                Console.WriteLine($"Subscribed to {topicSharedLong} and {topicLoadProfile}.");
+                Console.WriteLine($"Subscribed to {topicSharedLong}.");
             });
 
             mqttClient.UseDisconnectedHandler(async e =>
@@ -80,19 +80,20 @@ namespace MQTT.Subscriber
                             };
                     if (topic == topicSharedLong)
                     {
-                        await readoutCollection.InsertOneAsync(document);
-                        string message = document["_id"].ToString();
-                        var messageBody = Encoding.UTF8.GetBytes(message);
-                        channel.BasicPublish(string.Empty, "Readout-queue", null, messageBody);
-                        Console.WriteLine($"{topicSharedLong} topic'ine ait veri MongoDB'ye kaydedildi.document_ıd : {document["_id"]}");
-                    }else if (topic == topicLoadProfile)
-                    {
-                        await loadProfileCollection.InsertOneAsync(document);
-                        string message = document["_id"].ToString();
-                        var messageBody = Encoding.UTF8.GetBytes(message);
-                        channel.BasicPublish(string.Empty, "LoadProfile-queue", null, messageBody);
-                        Console.WriteLine($"{topicLoadProfile} topic'ine ait veri MongoDB'ye kaydedildi.document_ıd : {document["_id"]}");
+                        //await readoutCollection.InsertOneAsync(document);
+                        //string message = document["_id"].ToString();
+                        //var messageBody = Encoding.UTF8.GetBytes(message);
+                        //channel.BasicPublish(string.Empty, "Readout-queue", null, messageBody);
+                        Console.WriteLine($"{topicSharedLong} topic'ine ait veri {payload}");
                     }
+                    //}else if (topic == topicLoadProfile)
+                    //{
+                    //    await loadProfileCollection.InsertOneAsync(document);
+                    //    string message = document["_id"].ToString();
+                    //    var messageBody = Encoding.UTF8.GetBytes(message);
+                    //    channel.BasicPublish(string.Empty, "LoadProfile-queue", null, messageBody);
+                    //    Console.WriteLine($"{topicLoadProfile} topic'ine ait veri MongoDB'ye kaydedildi.document_ıd : {document["_id"]}");
+                    //}
                 }
                 catch (Exception ex)
                 {
