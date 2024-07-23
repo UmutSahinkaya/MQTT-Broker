@@ -17,12 +17,12 @@ namespace MQTT.Subscriber
             var options = new MqttClientOptionsBuilder()
                 .WithClientId("SubscriberClient")
                 .WithTcpServer("localhost", 1883)
-                .WithProtocolVersion(MQTTnet.Formatter.MqttProtocolVersion.V500)
                 .Build();
 
             var factory = new MqttFactory();
             var mqttClient = factory.CreateMqttClient(); 
-            string topicSharedLong = Topic.topicSharedLong;
+            string topicSharedLong = Topic.topicShared2Long;
+            var sayac = 0;
             //string topicLoadProfile = Topic.topicLoadProfile;
 
             //Rabbit Mq ayarları
@@ -78,14 +78,15 @@ namespace MQTT.Subscriber
                             {
                                 { "Message", payload }
                             };
-                    if (topic == topicSharedLong)
-                    {
+                    
+                    //if (topic == topicSharedLong)
+                    //{
                         //await readoutCollection.InsertOneAsync(document);
                         //string message = document["_id"].ToString();
                         //var messageBody = Encoding.UTF8.GetBytes(message);
                         //channel.BasicPublish(string.Empty, "Readout-queue", null, messageBody);
                         Console.WriteLine($"{topicSharedLong} topic'ine ait veri {payload}");
-                    }
+                    //}
                     //}else if (topic == topicLoadProfile)
                     //{
                     //    await loadProfileCollection.InsertOneAsync(document);

@@ -15,16 +15,16 @@ namespace MQTT.Publisher
         {
             var factory = new MqttFactory();
             var mqttClient = factory.CreateMqttClient();
-            //var data = LongReadOut.LoadProfileMessage2;
-            var data = "test";
-            const int deviceCount = 1000; 
+            var sayac = 0;
+            //var data = LongReadOut.LoadProfileMessage2+$"{sayac+=1}";
+            var data = "test" + $"{sayac += 1}";
+            const int deviceCount = 10; 
             string topicLong = Topic.topicLong;
             //string topicLoadProfile = Topic.topicLoadProfile;
 
             var options = new MqttClientOptionsBuilder()
                 .WithClientId("PublisherClient")
                 .WithTcpServer("localhost", 1883)
-                .WithProtocolVersion(MQTTnet.Formatter.MqttProtocolVersion.V500)
                 .Build();
 
             // 2 saniye gecikme ekleyin
@@ -39,7 +39,7 @@ namespace MQTT.Publisher
                     var message = new MqttApplicationMessageBuilder()
                         .WithTopic(topicLong)
                         .WithPayload($"{data} - {index + 1}")
-                        .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
+                        .WithExactlyOnceQoS()
                         .Build(); 
                     //var loadProfileMessage = new MqttApplicationMessageBuilder()
                     //    .WithTopic(topicLoadProfile)

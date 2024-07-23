@@ -15,12 +15,12 @@ namespace MQTT.Subscriber2
             var options = new MqttClientOptionsBuilder()
                 .WithClientId("Subscriber2Client")
                 .WithTcpServer("localhost", 1883)
-                .WithProtocolVersion(MQTTnet.Formatter.MqttProtocolVersion.V500)
                 .Build();
 
             var factory = new MqttFactory();
             var mqttClient = factory.CreateMqttClient();
             string topicSharedLong = Topic.topicSharedLong;
+            var sayac = 0;
             //string topicLoadProfile = Topic.topicLoadProfile;
 
             //Rabbit Mq ayarları
@@ -39,12 +39,12 @@ namespace MQTT.Subscriber2
 
             mqttClient.UseConnectedHandler(async e =>
             {
-                Console.WriteLine("Subscriber1 connected successfully.");
+                Console.WriteLine("Subscriber2 connected successfully.");
 
                 // Shared Subscription ile abone olma
                 await mqttClient.SubscribeAsync(new MqttTopicFilterBuilder()
                     .WithTopic(topicSharedLong)
-                    .WithAtLeastOnceQoS()
+                    .WithExactlyOnceQoS()
                     .Build());
                 //await mqttClient.SubscribeAsync(new MqttTopicFilterBuilder()
                 //    .WithTopic(topicLoadProfile)
@@ -56,7 +56,7 @@ namespace MQTT.Subscriber2
 
             mqttClient.UseDisconnectedHandler(async e =>
             {
-                Console.WriteLine("Subscriber disconnected.");
+                Console.WriteLine("Subscriber2 disconnected.");
                 if (e.Exception != null)
                 {
                     Console.WriteLine($"Bağlantı kesilme nedeni: {e.Exception.Message}");
@@ -76,14 +76,14 @@ namespace MQTT.Subscriber2
                             {
                                 { "Message", payload }
                             };
-                    if (topic == topicSharedLong)
-                    {
+                    //if (topic == topicSharedLong)
+                   // {
                         //await readoutCollection.InsertOneAsync(document);
                         //string message = document["_id"].ToString();
                         //var messageBody = Encoding.UTF8.GetBytes(message);
                         //channel.BasicPublish(string.Empty, "Readout-queue", null, messageBody);
                         Console.WriteLine($"{topicSharedLong} topic'ine ait veri {payload}");
-                    }
+                    //}
                     //}else if (topic == topicLoadProfile)
                     //{
                     //    await loadProfileCollection.InsertOneAsync(document);
