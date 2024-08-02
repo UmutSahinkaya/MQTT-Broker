@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Data;
 using MQTTnet;
@@ -11,63 +11,24 @@ namespace MQTT.Publisher
 {
     class Program
     {
+        private static IMqttClient mqttClient;
+        private static string topic = Topic.topicLoadProfile; 
+        private static Timer timer;
+        
         public static async Task Main(string[] args)
         {
             var factory = new MqttFactory();
-            var mqttClient = factory.CreateMqttClient();
-            var sayac = 0;
-            //var data = LongReadOut.LoadProfileMessage2+$"{sayac+=1}";
-            var data = "test" + $"{sayac += 1}";
-            const int deviceCount = 10; 
-            string topicLong = Topic.topicLong;
-            //string topicLoadProfile = Topic.topicLoadProfile;
+            mqttClient = factory.CreateMqttClient();
 
             var options = new MqttClientOptionsBuilder()
-                .WithClientId("PublisherClient")
+                .WithClientId("Publisher1Client")
                 .WithTcpServer("localhost", 1883)
                 .Build();
-
-            // 2 saniye gecikme ekleyin
-            await Task.Delay(2000);
 
             mqttClient.UseConnectedHandler(async e =>
             {
                 Console.WriteLine("Publisher connected successfully.");
-
-                for (int index = 0; index < deviceCount; index++)
-                {
-                    var message = new MqttApplicationMessageBuilder()
-                        .WithTopic(topicLong)
-                        .WithPayload($"{data} - {index + 1}")
-                        .WithExactlyOnceQoS()
-                        .Build(); 
-                    //var loadProfileMessage = new MqttApplicationMessageBuilder()
-                    //    .WithTopic(topicLoadProfile)
-                    //    .WithPayload($"{data} - {index + 1}")
-                    //    .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                    //    .Build();
-
-                    try
-                    {
-                        var result = await mqttClient.PublishAsync(message);
-                        Thread.Sleep(10);
-                        if (result.ReasonCode == MqttClientPublishReasonCode.Success)
-                        {
-                            Console.WriteLine($"Mesaj başarıyla yayımlandı: {index + 1}");
-                        }
-                        else
-                        {
-                            Console.WriteLine($"Mesaj yayımlanırken hata oluştu: {result.ReasonCode}");
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Mesaj yayınlama sırasında bir hata oluştu: {ex.Message}");
-                    }
-
-                }
-
-                Console.WriteLine($"Tüm mesajlar yayımlandı: {deviceCount} cihazdan");
+                StartTimer();
             });
 
             mqttClient.UseDisconnectedHandler(async e =>
@@ -101,6 +62,41 @@ namespace MQTT.Publisher
             Console.ReadLine();
 
             await mqttClient.DisconnectAsync();
+        }
+
+        private static void StartTimer()
+        {
+            timer = new Timer(SendMessage, null, TimeSpan.Zero, TimeSpan.FromMinutes(15));
+        }
+
+        private static async void SendMessage(object state)
+        {
+            var data = new DataModel();
+            
+
+            var messageReadout = new MqttApplicationMessageBuilder()
+                    .WithTopic(topic)
+                    .WithPayload(data.ToJson())
+                    .WithAtLeastOnceQoS()
+                    .Build();
+
+            try
+            {
+                var currentTime = DateTime.Now.ToString("HH:mm");
+                var result = await mqttClient.PublishAsync(messageReadout);
+                if (result.ReasonCode == MqttClientPublishReasonCode.Success)
+                {
+                    Console.WriteLine($"Mesaj başarıyla yayımlandı - Saat: {currentTime}");
+                }
+                else
+                {
+                    Console.WriteLine($"Mesaj yayımlanırken hata oluştu: {result.ReasonCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Mesaj yayınlama sırasında bir hata oluştu: {ex.Message}");
+            }
         }
     }
 }

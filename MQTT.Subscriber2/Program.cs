@@ -5,6 +5,7 @@ using MQTTnet;
 using MQTTnet.Client;
 using Data;
 using MQTTnet.Client.Options;
+using RabbitMQ.Client;
 
 namespace MQTT.Subscriber2
 {
@@ -21,21 +22,21 @@ namespace MQTT.Subscriber2
             var mqttClient = factory.CreateMqttClient();
             string topicSharedLong = Topic.topicSharedLong;
             var sayac = 0;
-            //string topicLoadProfile = Topic.topicLoadProfile;
+            string topicLoadProfile = Topic.topicLoadProfile;
 
             //Rabbit Mq ayarları
-            //var rabbitmqFactory = new ConnectionFactory();
-            //rabbitmqFactory.Uri = new Uri("amqps://idcmiqqv:ud3-AL5qsqzzNxSa5oaOT9LPFcZyo2NU@cow.rmq2.cloudamqp.com/idcmiqqv");
-            //using var connection = rabbitmqFactory.CreateConnection();
-            //var channel = connection.CreateModel();
-            //channel.QueueDeclare("RawData-queue", true, false, false);
-            //channel.QueueDeclare("LoadProfile-queue", true, false, false);
+            var rabbitmqFactory = new ConnectionFactory();
+            rabbitmqFactory.Uri = new Uri("amqps://idcmiqqv:ud3-AL5qsqzzNxSa5oaOT9LPFcZyo2NU@cow.rmq2.cloudamqp.com/idcmiqqv");
+            using var connection = rabbitmqFactory.CreateConnection();
+            var channel = connection.CreateModel();
+            channel.QueueDeclare("RawData-queue", true, false, false);
+            channel.QueueDeclare("LoadProfile-queue", true, false, false);
 
-            // MongoDB'ye bağlan
-            //var client = new MongoClient("mongodb://localhost:27017");
-            //var database = client.GetDatabase("MyDatabase");
-            //var readoutCollection = database.GetCollection<BsonDocument>("ReadoutCollection");
-            //var loadProfileCollection = database.GetCollection<BsonDocument>("LoadProfileCollection");
+            //MongoDB'ye bağlan
+            var client = new MongoClient("mongodb://localhost:27017");
+            var database = client.GetDatabase("MyDatabase");
+            var readoutCollection = database.GetCollection<BsonDocument>("ReadoutCollection");
+            var loadProfileCollection = database.GetCollection<BsonDocument>("LoadProfileCollection");
 
             mqttClient.UseConnectedHandler(async e =>
             {
@@ -78,10 +79,10 @@ namespace MQTT.Subscriber2
                             };
                     //if (topic == topicSharedLong)
                    // {
-                        //await readoutCollection.InsertOneAsync(document);
-                        //string message = document["_id"].ToString();
-                        //var messageBody = Encoding.UTF8.GetBytes(message);
-                        //channel.BasicPublish(string.Empty, "Readout-queue", null, messageBody);
+                        await readoutCollection.InsertOneAsync(document);
+                        string message = document["_id"].ToString();
+                        var messageBody = Encoding.UTF8.GetBytes(message);
+                        channel.BasicPublish(string.Empty, "Readout-queue", null, messageBody);
                         Console.WriteLine($"{topicSharedLong} topic'ine ait veri {payload}");
                     //}
                     //}else if (topic == topicLoadProfile)
