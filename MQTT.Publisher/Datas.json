@@ -1,8 +1,8 @@
 {
-  "SerialNumber": "12345675",
-  "ClientId": "DefaultClient5",
+  "SerialNumber": "12345672",
+  "ClientId": "DefaultClient2",
   "Time": 1,
-  "Readout": "LongReadout",
+  "Readout": "LongReadout3",
   "Topic": "topicReadout",
   "topicLoadProfile": "loadProfile/topic",
   "topicReadout": "readout/topic",

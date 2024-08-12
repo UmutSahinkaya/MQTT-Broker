@@ -130,7 +130,15 @@ namespace MQTT.Publisher
 
 
             // Readout değerine göre veriyi seç
-            if (data.Readout == "LongReadout")
+            if (data.Readout == "LongReadout3")
+            {
+                selectedReadout = data.LongReadout3;
+            }
+            else if (data.Readout == "LongReadout2")
+            {
+                selectedReadout = data.LongReadout2;
+            }
+            else if(data.Readout == "LongReadout")
             {
                 selectedReadout = data.LongReadout;
             }
@@ -152,7 +160,7 @@ namespace MQTT.Publisher
             });
 
             var messageReadout = new MqttApplicationMessageBuilder()
-                .WithTopic(topic)
+                .WithTopic(selectedTopic)
                 .WithPayload(payload)
                 .WithAtLeastOnceQoS()
                 .Build();
@@ -207,6 +215,8 @@ namespace MQTT.Publisher
             public string topicLoadProfile { get; set; }
             public string topicReadout { get; set; }
             public string LongReadout { get; set; }
+            public string LongReadout2 { get; set; }
+            public string LongReadout3 { get; set; }
             public string LoadProfileMessage { get; set; } // LoadProfile verisi için alan
             public string Readout { get; set; } // Dışarıdan belirlenen Readout değeri
         }
